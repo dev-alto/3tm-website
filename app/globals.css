@@ -38,11 +38,6 @@ body {
   font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
-button, input, nav {
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, font-size, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function) /* cubic-bezier(0.4, 0, 0.2, 1) */);
-  transition-duration: var(--tw-duration, 500ms /* 150ms */);
-}
 
 button {
   cursor: pointer;

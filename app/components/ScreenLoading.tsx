@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { RiLoader3Fill } from 'react-icons/ri'
 
 export function ScreenLoading() {
-    const [loaded, setLoaded] = useState(document.readyState === 'complete')
+    const [loaded, setLoaded] = useState(false) // NOTE: changed to false to force to show loading screen at least for a little bit
 
     useEffect(() => {
         function stateUpdate() {
@@ -13,6 +13,8 @@ export function ScreenLoading() {
                 setLoaded(true)
             }
         }
+
+        stateUpdate()
 
         document.addEventListener('readystatechange', stateUpdate)
 
@@ -23,17 +25,17 @@ export function ScreenLoading() {
 
     return (
         <section className={`z-110 fixed top-0 w-full h-screen ${loaded && 'pointer-events-none'}`}>
-            <div className={`w-full bg-background ${loaded ? 'h-[0%]' : 'h-[12%]'} transition-all duration-1000 delay-2000`}></div>
-            <div className={`w-full flex flex-col items-center justify-center bg-backdrop/75 ${loaded ? 'h-full opacity-0' : 'h-[76%]'} backdrop-blur-2xl transition-all duration-1000 delay-2000`}>
+            <div className={`w-full bg-background ${loaded ? 'h-[0%]' : 'h-[12%]'} transition-all duration-1000 delay-1000`}></div>
+            <div className={`w-full flex flex-col items-center justify-center bg-backdrop/75 ${loaded ? 'h-full opacity-0' : 'h-[76%]'} backdrop-blur-2xl transition-all duration-1000 delay-1000`}>
                 <div className="z-10 flex flex-col items-center justify-center animate-pulse">
                     <RiLoader3Fill className="text-foreground text-[240px] opacity-20" style={{ animation: 'spin 3s linear infinite' }} />
                     <h1 className="absolute z-10 pr-6 text-9xl italic font-conchin font-semibold tracking-tight leading-28 sm:leading-40">3TM</h1>
                 </div>
-                <video className="hidden md:block absolute w-full h-full object-cover opacity-4 " loop muted autoPlay playsInline disablePictureInPicture>
+                <video className="hidden md:block absolute w-full h-full object-cover opacity-4" loop muted autoPlay playsInline disablePictureInPicture>
                     <source src="/assets/WEKFESTFINAL_2.webm" />
                 </video>
             </div>
-            <div className={`w-full bg-background ${loaded ? 'h-[0%]' : 'h-[12%]'} transition-all duration-1000 delay-2000`}></div>
+            <div className={`w-full bg-background ${loaded ? 'h-[0%]' : 'h-[12%]'} transition-all duration-1000 delay-1000`}></div>
         </section>
     )
 }

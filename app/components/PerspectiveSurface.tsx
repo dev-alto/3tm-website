@@ -1,0 +1,77 @@
+'use client'
+
+// NOTE: will desync on scroll whilst keeping mouse hover 
+
+import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react'
+
+interface PerspectiveSurfaceProps extends React.HTMLProps<HTMLDivElement> {
+    children: ReactNode
+    maxAngleX?: number
+    maxAngleY?: number
+    invertX?: boolean
+    invertY?: boolean
+    perspective?: number
+}
+
+export function PerspectiveSurface({ children, maxAngleX = 0, maxAngleY = 0, invertX = false, invertY = false, perspective = 1200, ...rest }: PerspectiveSurfaceProps) {
+
+    const [rotation, setRotation] = useState('')
+    const [hovering, setHovering] = useState(false)
+
+    const cardRef = useRef<HTMLDivElement>(null)
+    const cardBoundsRef = useRef<DOMRect>(null)
+
+    function updatePerspective(event: MouseEvent) {
+        if (!cardBoundsRef.current) return
+
+        const cardBounds = cardBoundsRef.current
+
+        const mouseX = event.clientX - (cardBounds.x + cardBounds.width / 2)
+        const mouseY = event.clientY - (cardBounds.y + cardBounds.height / 2)
+
+        const mousePX = mouseX / cardBounds.width
+        const mousePY = mouseY / cardBounds.height
+
+        let rX = mousePX * maxAngleX
+        if (invertX)
+            rX *= -1
+
+        let rY = mousePY * maxAngleY
+        if (invertY)
+            rY *= -1
+
+        const rotation = `rotateY(${rX}deg) rotateX(${-rY}deg)`
+        
+        setHovering(true)
+        setRotation(rotation)
+        // console.log(rotation)
+    }
+
+    function updateCardBounds() {
+        cardBoundsRef.current = cardRef.current!.getBoundingClientRect()
+    }
+
+    useEffect(() => {
+        if (!cardRef.current) return
+
+        updateCardBounds()
+        window.addEventListener('resize', updateCardBounds)
+
+        return () => {
+            window.removeEventListener('resize', updateCardBounds)
+        }
+    }, [cardRef])
+    
+    return <div className="w-full h-full" style={{ perspective: perspective }} {...rest}>
+        <div
+            className="w-full h-full transition-all hover:ease-out ease-linear duration-700"
+            style={{ transform: hovering ? rotation : '' }}
+            onMouseEnter={updateCardBounds}
+            onMouseMove={updatePerspective}
+            onMouseLeave={() => { setHovering(false) }}
+            ref={cardRef}
+        >
+            {children}
+        </div>
+    </div>
+}
